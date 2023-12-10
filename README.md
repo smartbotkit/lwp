@@ -8,15 +8,15 @@ To enable the "app control", the hub is equipped with a Bluetooth LE transmitter
 
 Under the hood, the message transfer is implemented via the Generic Attribute Profile (GATT). The hub exposes a single GATT characteristic via a single service with a well-known id. The mobile phone then subscribes to changes to the data managed by the characteristic and whenever the service characteristic changes its data, the mobile phone will receive a message. To send messages, the mobile phone posts changes to the data of this characteristic.
 
-To establish the connection between a mobile phone and the hub, the phone must be able to detect the hub. To be support discovery, the hub can send announcement frames using the Generic Access Profile (GAP). These are short messages that are broadcasted periodically accross multiple Bluetooth LE channels. To differentiate the hub from other devices that might also be using GAP for discovery, the announcement includes anothe well-known id. 
+To establish the connection between a mobile phone and the hub, the phone must be able to detect the hub. To be support discovery, the hub can send announcement frames using the Generic Access Profile (GAP). These are short messages that are broadcasted periodically across multiple Bluetooth LE channels. To differentiate the hub from other devices that might also be using GAP for discovery, the announcement includes another well-known id. 
 
 Since sending announcement frames is a waste of energy when nobody wants to "app control" the hub, the hub is equipped with a button. When pushed, the hub will send the frames for a couple of seconds. The announcements are stopped if a connection is established or the time has ran out.
 
 ## Usage
 
-The main class is the HubManager. It interfaces with the Bluetooth LE stack of an Apple device. Using the startScanning and stopScanning functions, you can enable and disable the discovery. When a new hub is detect, you can receive a reference to it through the HubManagerDelegate. Using the Hub class you can then register for port changes using the HubDelegate. Finally, you can use the ports to interact with the different hardware components.
+The main class is the HubManager. It interfaces with the Bluetooth LE stack of an Apple device. Using the startScanning and stopScanning functions, you can enable and disable the discovery. When a new hub is detected, you can receive a reference to it through the HubManagerDelegate. Using the Hub class, you can then register for port changes via the HubDelegate. Finally, you can use the ports to interact with the different hardware components.
 
-If you are planing on using SwiftUI, you can use a detected hub to create a MediumTechnicHub. This class provides a simpler way to access the hub's sensors. When created, it subscribes to the relevant sensors of the hub and continously provides their values via an observable object. The TransformationVehicle class extends this idea to the motor configuration used by the Lego kit 42140.
+If you are planning on using SwiftUI, you can use a detected hub to create a MediumTechnicHub. This class provides a simpler way to access the hub's sensors. When created, it subscribes to the relevant sensors of the hub and continuously provides their values via an observable object. The TransformationVehicle class extends this idea to the motor configuration used by the Lego kit 42140.
 
 ## Notes
 
