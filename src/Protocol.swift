@@ -627,7 +627,7 @@ public class ResponseDecoder {
         var remainder = [UInt8](repeating: 0, count: buffer.count - length)
         remainder.withUnsafeMutableBufferPointer {
             ptr in
-            buffer.copyBytes(to: ptr, from: length...buffer.count)
+            buffer.copyBytes(to: ptr, from: length..<buffer.count)
         }
         buffer = remainder
         let hub = data[offset]

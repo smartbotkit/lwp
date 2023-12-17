@@ -17,7 +17,7 @@ public class TransformationVehicle: MediumTechnicHubBase<TransformationVehicleSe
     /// The second motor of the vehicle.
     private(set) public var motorPort2: LinearMotorPort? { willSet { objectWillChange.send() }}
     /// A combined port to control both motors simultaneously.
-    private(set) public var motorsPort: VirtualPort? { willSet { objectWillChange.send() }}
+    private(set) public var motorsPort: DualLinearMotorPort? { willSet { objectWillChange.send() }}
     
     /// Creates a new vehicle that delivers events on the main queue.
     ///
@@ -104,16 +104,15 @@ public class TransformationVehicle: MediumTechnicHubBase<TransformationVehicleSe
     /// - parameter port2 The second port.
     func createVirtualPort(port1: Port, port2: Port) {
         // The firmware does not delete the virtual port between
-        // motor1 and motor2 when the device disconnects. In addition,
-        // the port will not be announced as being existing upon reconnect.
-        // As a workaround, we first disconnect the usual port id - which will
-        // fail if the device just booted but this will guarantee that
-        // the motors are not already in a virtual port that we cannot discover.
-        self.hub?.enqueueMessage(body: .virtualPortSetupRequest(request: .disconnect(virtualPortId: 16)), handler: nil)
-        // Now that everything is defintively disconnected, we can begin
-        // our setup and it will not fail.
-        self.hub?.enqueueMessage(body: .virtualPortSetupRequest(request: .connect(portId1: port1.portId, portId2: port2.portId)), handler: nil)
-         
+        // motor1 and motor2 when the device disconnects. But
+        // the port will be announced as existing, so we just
+        // keep it as is, if it is already configured from a
+        // previous connection. Note that this assumes that
+        // the port is detected before motor1 and motor2 is
+        // configured, but this should be the case.
+        if motorsPort == nil {
+            self.hub?.enqueueMessage(body: .virtualPortSetupRequest(request: .connect(portId1: port1.portId, portId2: port2.portId)), handler: nil)
+        }         
     }
     
     /// Called when a port is removed.
